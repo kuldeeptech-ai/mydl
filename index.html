@@ -151,28 +151,58 @@ Promise.all([
   });
 });
 
-/* ---------- SEARCH SUGGESTIONS (FIXED) ---------- */
+/* ---------- SEARCH SUGGESTIONS (FIXED PROPERLY) ---------- */
 let timer;
-search.oninput=()=>{
+search.oninput = () => {
   clearTimeout(timer);
-  const q=search.value.trim();
-  if(!q){suggestions.style.display="none";return;}
-  timer=setTimeout(async()=>{
-    const r=await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${q}`);
-    const d=await r.json();
-    suggestions.innerHTML="";
+  const q = search.value.trim();
+  if (!q) {
+    suggestions.style.display = "none";
+    return;
+  }
+
+  timer = setTimeout(async () => {
+    const r = await fetch(
+      `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}`
+    );
+    const d = await r.json();
+
+    suggestions.innerHTML = "";
+
     d.results
-      .filter(x=>x.origin_country?.includes("IN"))
-      .filter(x=>(x.release_date||x.first_air_date||"") <= TODAY)
-      .forEach(item=>{
-        const s=document.createElement("div");
-        s.className="sug";
-        s.innerHTML=`<img src="${IMG+item.poster_path}"><span>${item.title||item.name}</span>`;
-        s.onclick=()=>openItem(item);
+      .filter(item => {
+        // Poster must exist
+        if (!item.poster_path) return false;
+
+        // Date must not be future
+        const date = item.release_date || item.first_air_date;
+        if (!date || date > TODAY) return false;
+
+        // Movie or TV only
+        if (item.media_type !== "movie" && item.media_type !== "tv") return false;
+
+        // India condition
+        if (item.media_type === "tv") {
+          return item.origin_country && item.origin_country.includes("IN");
+        } else {
+          // Movies: language based India relevance
+          return ["hi", "ta", "te", "ml", "kn", "bn"].includes(item.original_language);
+        }
+      })
+      .slice(0, 8)
+      .forEach(item => {
+        const s = document.createElement("div");
+        s.className = "sug";
+        s.innerHTML = `
+          <img src="${IMG + item.poster_path}">
+          <span>${item.title || item.name} (${(item.release_date || item.first_air_date || "").slice(0,4)})</span>
+        `;
+        s.onclick = () => openItem(item);
         suggestions.appendChild(s);
       });
-    suggestions.style.display="block";
-  },300);
+
+    suggestions.style.display = suggestions.children.length ? "block" : "none";
+  }, 300);
 };
 
 /* ---------- OPEN PLAYER ---------- */
