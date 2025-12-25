@@ -2,31 +2,103 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>TMDB Player</title>
+<title>Universal Player</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
+*{box-sizing:border-box}
 body{
   margin:0;
-  background:#0b0f1a;
+  background:radial-gradient(circle at top,#1b2145,#070912 70%);
   color:#fff;
-  font-family:system-ui,sans-serif;
+  font-family:Inter,system-ui,sans-serif;
 }
-#home{padding:20px}
+
+/* HOME */
+#home{
+  padding:22px;
+  max-width:1200px;
+  margin:auto;
+}
+h2{
+  margin:0 0 14px;
+  font-weight:700;
+}
+.controls{
+  display:grid;
+  grid-template-columns:140px 1fr;
+  gap:10px;
+}
 input,select,button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:8px;
+  padding:13px;
+  border-radius:10px;
   border:none;
+  font-size:15px;
 }
+input,select{
+  background:#0f1430;
+  color:#fff;
+}
+input::placeholder{color:#aaa}
 button{
-  background:#5b6cff;
+  background:linear-gradient(135deg,#6a5cff,#8f7bff);
   color:#fff;
   font-weight:600;
+  cursor:pointer;
 }
+
+/* TV EXTRA */
+#tvFields{
+  margin-top:10px;
+  display:none;
+  gap:10px;
+}
+#tvFields input{
+  width:100%;
+  margin-top:8px;
+}
+
+/* RESULTS */
+#results{
+  margin-top:24px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:18px;
+}
+.card{
+  background:#0e132e;
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.25s;
+}
+.card:hover{
+  transform:translateY(-5px);
+}
+.card img{
+  width:100%;
+  aspect-ratio:2/3;
+  object-fit:cover;
+}
+.card .info{
+  padding:10px;
+}
+.card h4{
+  margin:0;
+  font-size:14px;
+  font-weight:600;
+}
+.card span{
+  font-size:12px;
+  color:#aaa;
+}
+
+/* PLAYER */
 #playerBox{
   display:none;
+  width:100%;
   height:100vh;
 }
 iframe{
@@ -40,106 +112,124 @@ iframe{
 
 <body>
 
+<!-- HOME -->
 <div id="home">
   <h2>Movie / TV Player</h2>
 
-  <select id="typeSelect">
-    <option value="movie">Movie</option>
-    <option value="tv">TV Show</option>
-  </select>
-
-  <input id="queryInput" placeholder="Enter movie or TV name">
-
-  <div id="tvFields" style="display:none">
-    <input id="seasonInput" placeholder="Season number">
-    <input id="episodeInput" placeholder="Episode number">
+  <div class="controls">
+    <select id="type">
+      <option value="movie">Movie</option>
+      <option value="tv">TV Show</option>
+    </select>
+    <input id="query" placeholder="Search movie or TV show name">
   </div>
 
-  <button onclick="play()">Play</button>
+  <div id="tvFields">
+    <input id="season" placeholder="Season number">
+    <input id="episode" placeholder="Episode number">
+  </div>
+
+  <button id="playBtn" style="margin-top:14px">Search</button>
+
+  <div id="results"></div>
 </div>
 
+<!-- PLAYER -->
 <div id="playerBox">
-  <iframe id="player"
+  <iframe
+    id="player"
     allowfullscreen
-    sandbox="allow-scripts allow-same-origin allow-presentation">
+    allow="autoplay; fullscreen; encrypted-media"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox">
   </iframe>
 </div>
 
 <script>
+/* CONFIG */
 const TMDB_KEY = "c88113b226b2687a8bd933ae8cac61f4";
 const BASE_URL = "https://bunnyddl.termsandconditionshere.workers.dev";
+const IMG = "https://image.tmdb.org/t/p/w500";
 
+/* ELEMENTS */
 const home = document.getElementById("home");
 const playerBox = document.getElementById("playerBox");
 const iframe = document.getElementById("player");
+const typeEl = document.getElementById("type");
+const queryEl = document.getElementById("query");
+const seasonEl = document.getElementById("season");
+const episodeEl = document.getElementById("episode");
+const results = document.getElementById("results");
 
-const typeSelect = document.getElementById("typeSelect");
-const queryInput = document.getElementById("queryInput");
-const seasonInput = document.getElementById("seasonInput");
-const episodeInput = document.getElementById("episodeInput");
-
-typeSelect.addEventListener("change", ()=>{
+/* UI TOGGLE */
+typeEl.addEventListener("change",()=>{
   document.getElementById("tvFields").style.display =
-    typeSelect.value === "tv" ? "block" : "none";
+    typeEl.value === "tv" ? "block" : "none";
 });
 
-function uid(){
+/* UNIQUE CODE */
+function makeCode(){
   return Math.random().toString(36).slice(2,10);
 }
 
-async function play(){
-  const type = typeSelect.value;
-  const name = queryInput.value.trim();
+/* SEARCH */
+document.getElementById("playBtn").onclick = async ()=>{
+  const type = typeEl.value;
+  const name = queryEl.value.trim();
   if(!name) return alert("Enter name");
+
+  results.innerHTML = "";
 
   const searchURL =
     `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_KEY}&query=${encodeURIComponent(name)}`;
 
-  let data;
-  try{
-    data = await fetch(searchURL).then(r=>r.json());
-  }catch(e){
-    alert("Network error");
-    return;
-  }
-
+  const data = await fetch(searchURL).then(r=>r.json());
   if(!data.results || !data.results.length){
-    alert("No result found");
+    results.innerHTML = "<p>No result found</p>";
     return;
   }
 
-  const id = data.results[0].id;
+  data.results.slice(0,12).forEach(item=>{
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img src="${item.poster_path ? IMG+item.poster_path : ""}">
+      <div class="info">
+        <h4>${item.title || item.name}</h4>
+        <span>${(item.release_date || item.first_air_date || "").slice(0,4)}</span>
+      </div>
+    `;
+    card.onclick = ()=>openPlayer(item.id);
+    results.appendChild(card);
+  });
+};
 
+/* OPEN PLAYER */
+function openPlayer(id){
   let path = "";
-  if(type === "movie"){
+  if(typeEl.value === "movie"){
     path = `/movie/${id}`;
   }else{
-    const s = seasonInput.value;
-    const e = episodeInput.value;
-    if(!s || !e) return alert("Season & Episode required");
-    path = `/tv/${id}/${s}/${e}`;
+    if(!seasonEl.value || !episodeEl.value){
+      alert("Season & Episode required");
+      return;
+    }
+    path = `/tv/${id}/${seasonEl.value}/${episodeEl.value}`;
   }
 
-  // UI switch
   home.style.display = "none";
   playerBox.style.display = "block";
 
-  // unique browser code
-  history.pushState(
-    {page:"player"},
-    "",
-    `?watch=${uid()}`
-  );
+  history.pushState({page:"player"},"",`?watch=${makeCode()}`);
 
   iframe.src = BASE_URL + path;
 }
 
-// Back button = home
-window.onpopstate = ()=>{
+/* BACK */
+window.addEventListener("popstate",()=>{
   iframe.src = "";
   playerBox.style.display = "none";
   home.style.display = "block";
-};
+});
 </script>
 
 </body>
