@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TMDB Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  margin:0;
+  background:#0b0f1a;
+  color:#fff;
+  font-family:system-ui,sans-serif;
+}
+#home{padding:20px}
+input,select,button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:8px;
+  border:none;
+}
+button{
+  background:#5b6cff;
+  color:#fff;
+  font-weight:600;
+}
+#playerBox{
+  display:none;
+  height:100vh;
+}
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
+  background:#000;
+}
+</style>
+</head>
+
+<body>
+
+<div id="home">
+  <h2>Movie / TV Player</h2>
+
+  <select id="typeSelect">
+    <option value="movie">Movie</option>
+    <option value="tv">TV Show</option>
+  </select>
+
+  <input id="queryInput" placeholder="Enter movie or TV name">
+
+  <div id="tvFields" style="display:none">
+    <input id="seasonInput" placeholder="Season number">
+    <input id="episodeInput" placeholder="Episode number">
+  </div>
+
+  <button onclick="play()">Play</button>
+</div>
+
+<div id="playerBox">
+  <iframe id="player"
+    allowfullscreen
+    sandbox="allow-scripts allow-same-origin allow-presentation">
+  </iframe>
+</div>
+
+<script>
+const TMDB_KEY = "c88113b226b2687a8bd933ae8cac61f4";
+const BASE_URL = "https://bunnyddl.termsandconditionshere.workers.dev";
+
+const home = document.getElementById("home");
+const playerBox = document.getElementById("playerBox");
+const iframe = document.getElementById("player");
+
+const typeSelect = document.getElementById("typeSelect");
+const queryInput = document.getElementById("queryInput");
+const seasonInput = document.getElementById("seasonInput");
+const episodeInput = document.getElementById("episodeInput");
+
+typeSelect.addEventListener("change", ()=>{
+  document.getElementById("tvFields").style.display =
+    typeSelect.value === "tv" ? "block" : "none";
+});
+
+function uid(){
+  return Math.random().toString(36).slice(2,10);
+}
+
+async function play(){
+  const type = typeSelect.value;
+  const name = queryInput.value.trim();
+  if(!name) return alert("Enter name");
+
+  const searchURL =
+    `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_KEY}&query=${encodeURIComponent(name)}`;
+
+  let data;
+  try{
+    data = await fetch(searchURL).then(r=>r.json());
+  }catch(e){
+    alert("Network error");
+    return;
+  }
+
+  if(!data.results || !data.results.length){
+    alert("No result found");
+    return;
+  }
+
+  const id = data.results[0].id;
+
+  let path = "";
+  if(type === "movie"){
+    path = `/movie/${id}`;
+  }else{
+    const s = seasonInput.value;
+    const e = episodeInput.value;
+    if(!s || !e) return alert("Season & Episode required");
+    path = `/tv/${id}/${s}/${e}`;
+  }
+
+  // UI switch
+  home.style.display = "none";
+  playerBox.style.display = "block";
+
+  // unique browser code
+  history.pushState(
+    {page:"player"},
+    "",
+    `?watch=${uid()}`
+  );
+
+  iframe.src = BASE_URL + path;
+}
+
+// Back button = home
+window.onpopstate = ()=>{
+  iframe.src = "";
+  playerBox.style.display = "none";
+  home.style.display = "block";
+};
+</script>
+
+</body>
+</html>
