@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,53 +17,54 @@ body{
   font-family:Inter,system-ui,sans-serif;
 }
 
+/* HEADER */
+header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:16px 22px;
+}
+header img{height:36px}
+header h1{margin:0;font-size:18px}
+
 /* HOME */
 #home{
-  padding:22px;
+  padding:0 22px 22px;
   max-width:1200px;
   margin:auto;
 }
-h2{
-  margin:0 0 14px;
-  font-weight:700;
-}
-.controls{
-  display:grid;
-  grid-template-columns:140px 1fr;
-  gap:10px;
-}
-input,select,button{
-  padding:13px;
-  border-radius:10px;
+.searchWrap{position:relative}
+input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
   border:none;
-  font-size:15px;
-}
-input,select{
   background:#0f1430;
   color:#fff;
 }
-input::placeholder{color:#aaa}
-button{
-  background:linear-gradient(135deg,#6a5cff,#8f7bff);
-  color:#fff;
-  font-weight:600;
+#suggestions{
+  position:absolute;
+  top:100%;
+  left:0;
+  right:0;
+  background:#0e132e;
+  border-radius:12px;
+  margin-top:6px;
+  overflow:hidden;
+  display:none;
+  z-index:10;
+}
+.sug{
+  display:flex;
+  gap:10px;
+  padding:10px;
   cursor:pointer;
 }
+.sug:hover{background:#1a2050}
+.sug img{width:40px;border-radius:6px}
 
-/* TV EXTRA */
-#tvFields{
-  margin-top:10px;
-  display:none;
-  gap:10px;
-}
-#tvFields input{
-  width:100%;
-  margin-top:8px;
-}
-
-/* RESULTS */
-#results{
-  margin-top:24px;
+.grid{
+  margin-top:20px;
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
   gap:18px;
@@ -72,28 +74,13 @@ button{
   border-radius:14px;
   overflow:hidden;
   cursor:pointer;
-  transition:.25s;
-}
-.card:hover{
-  transform:translateY(-5px);
 }
 .card img{
   width:100%;
   aspect-ratio:2/3;
   object-fit:cover;
 }
-.card .info{
-  padding:10px;
-}
-.card h4{
-  margin:0;
-  font-size:14px;
-  font-weight:600;
-}
-.card span{
-  font-size:12px;
-  color:#aaa;
-}
+.card div{padding:8px;font-size:14px}
 
 /* PLAYER */
 #playerBox{
@@ -112,124 +99,106 @@ iframe{
 
 <body>
 
-<!-- HOME -->
+<header>
+  <img src="https://i.ibb.co/bMbBqrkY/1000222391.png" alt="Logo">
+  <h1>Universal Player</h1>
+</header>
+
 <div id="home">
-  <h2>Movie / TV Player</h2>
-
-  <div class="controls">
-    <select id="type">
-      <option value="movie">Movie</option>
-      <option value="tv">TV Show</option>
-    </select>
-    <input id="query" placeholder="Search movie or TV show name">
+  <div class="searchWrap">
+    <input id="search" placeholder="Search Indian movie or TV show (2025)">
+    <div id="suggestions"></div>
   </div>
 
-  <div id="tvFields">
-    <input id="season" placeholder="Season number">
-    <input id="episode" placeholder="Episode number">
-  </div>
-
-  <button id="playBtn" style="margin-top:14px">Search</button>
-
-  <div id="results"></div>
+  <div class="grid" id="grid"></div>
 </div>
 
-<!-- PLAYER -->
 <div id="playerBox">
-  <iframe
-    id="player"
-    allowfullscreen
-    allow="autoplay; fullscreen; encrypted-media"
-    sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox">
-  </iframe>
+  <iframe id="player" allowfullscreen allow="autoplay; fullscreen"></iframe>
 </div>
 
 <script>
-/* CONFIG */
 const TMDB_KEY = "c88113b226b2687a8bd933ae8cac61f4";
-const BASE_URL = "https://bunnyddl.termsandconditionshere.workers.dev";
 const IMG = "https://image.tmdb.org/t/p/w500";
+const BASE_MOVIE = "https://bunnyddl.termsandconditionshere.workers.dev/movie/";
+const BASE_TV = "https://bunnyddl.termsandconditionshere.workers.dev/tv/";
 
-/* ELEMENTS */
 const home = document.getElementById("home");
 const playerBox = document.getElementById("playerBox");
 const iframe = document.getElementById("player");
-const typeEl = document.getElementById("type");
-const queryEl = document.getElementById("query");
-const seasonEl = document.getElementById("season");
-const episodeEl = document.getElementById("episode");
-const results = document.getElementById("results");
+const grid = document.getElementById("grid");
+const search = document.getElementById("search");
+const suggestions = document.getElementById("suggestions");
 
-/* UI TOGGLE */
-typeEl.addEventListener("change",()=>{
-  document.getElementById("tvFields").style.display =
-    typeEl.value === "tv" ? "block" : "none";
+const TODAY = new Date().toISOString().slice(0,10);
+
+/* ---------- LOAD INDIA 2025 (MOVIE + TV MERGED) ---------- */
+Promise.all([
+  fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_KEY}&with_origin_country=IN&primary_release_year=2025&primary_release_date.lte=${TODAY}`).then(r=>r.json()),
+  fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_KEY}&with_origin_country=IN&first_air_date_year=2025&first_air_date.lte=${TODAY}`).then(r=>r.json())
+]).then(([m,t])=>{
+  const all = [
+    ...m.results.map(x=>({...x,media:"movie"})),
+    ...t.results.map(x=>({...x,media:"tv"}))
+  ];
+  all.forEach(item=>{
+    if(!item.poster_path) return;
+    const c=document.createElement("div");
+    c.className="card";
+    c.innerHTML=`<img src="${IMG+item.poster_path}"><div>${item.title||item.name}</div>`;
+    c.onclick=()=>openItem(item);
+    grid.appendChild(c);
+  });
 });
 
-/* UNIQUE CODE */
-function makeCode(){
-  return Math.random().toString(36).slice(2,10);
-}
-
-/* SEARCH */
-document.getElementById("playBtn").onclick = async ()=>{
-  const type = typeEl.value;
-  const name = queryEl.value.trim();
-  if(!name) return alert("Enter name");
-
-  results.innerHTML = "";
-
-  const searchURL =
-    `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_KEY}&query=${encodeURIComponent(name)}`;
-
-  const data = await fetch(searchURL).then(r=>r.json());
-  if(!data.results || !data.results.length){
-    results.innerHTML = "<p>No result found</p>";
-    return;
-  }
-
-  data.results.slice(0,12).forEach(item=>{
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <img src="${item.poster_path ? IMG+item.poster_path : ""}">
-      <div class="info">
-        <h4>${item.title || item.name}</h4>
-        <span>${(item.release_date || item.first_air_date || "").slice(0,4)}</span>
-      </div>
-    `;
-    card.onclick = ()=>openPlayer(item.id);
-    results.appendChild(card);
-  });
+/* ---------- SEARCH SUGGESTIONS (FIXED) ---------- */
+let timer;
+search.oninput=()=>{
+  clearTimeout(timer);
+  const q=search.value.trim();
+  if(!q){suggestions.style.display="none";return;}
+  timer=setTimeout(async()=>{
+    const r=await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${q}`);
+    const d=await r.json();
+    suggestions.innerHTML="";
+    d.results
+      .filter(x=>x.origin_country?.includes("IN"))
+      .filter(x=>(x.release_date||x.first_air_date||"") <= TODAY)
+      .forEach(item=>{
+        const s=document.createElement("div");
+        s.className="sug";
+        s.innerHTML=`<img src="${IMG+item.poster_path}"><span>${item.title||item.name}</span>`;
+        s.onclick=()=>openItem(item);
+        suggestions.appendChild(s);
+      });
+    suggestions.style.display="block";
+  },300);
 };
 
-/* OPEN PLAYER */
-function openPlayer(id){
-  let path = "";
-  if(typeEl.value === "movie"){
-    path = `/movie/${id}`;
-  }else{
-    if(!seasonEl.value || !episodeEl.value){
-      alert("Season & Episode required");
-      return;
-    }
-    path = `/tv/${id}/${seasonEl.value}/${episodeEl.value}`;
-  }
+/* ---------- OPEN PLAYER ---------- */
+function openItem(item){
+  const url = item.media_type==="tv"
+    ? BASE_TV+item.id+"/1/1"
+    : BASE_MOVIE+item.id;
 
-  home.style.display = "none";
-  playerBox.style.display = "block";
+  home.style.display="none";
+  playerBox.style.display="block";
+  iframe.src=url;
 
-  history.pushState({page:"player"},"",`?watch=${makeCode()}`);
-
-  iframe.src = BASE_URL + path;
+  history.pushState({watch:url},"","?watch="+Math.random().toString(36).slice(2,8));
 }
 
-/* BACK */
-window.addEventListener("popstate",()=>{
-  iframe.src = "";
-  playerBox.style.display = "none";
-  home.style.display = "block";
-});
+/* ---------- REFRESH + BACK ---------- */
+if(new URLSearchParams(location.search).get("watch")){
+  home.style.display="none";
+  playerBox.style.display="block";
+}
+
+window.onpopstate=()=>{
+  iframe.src="";
+  playerBox.style.display="none";
+  home.style.display="block";
+};
 </script>
 
 </body>
