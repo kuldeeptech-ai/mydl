@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>Kuldeep Mobile Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    box-sizing:border-box;
+    font-family:'Poppins',system-ui;
+}
+body{
+    margin:0;
+    min-height:100vh;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+.container{
+    width:100%;
+    max-width:760px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(18px);
+    border-radius:20px;
+    padding:28px;
+    box-shadow:0 25px 60px rgba(0,0,0,.45);
+}
+.header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:18px;
+}
+.logo{
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#00c6ff,#0072ff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:18px;
+}
+.header h1{
+    margin:0;
+    font-size:20px;
+}
+.sub{
+    font-size:14px;
+    opacity:.9;
+    margin-bottom:20px;
+}
+.steps{
+    margin-top:10px;
+}
+.step{
+    display:flex;
+    gap:14px;
+    margin-bottom:14px;
+}
+.no{
+    min-width:30px;
+    height:30px;
+    border-radius:50%;
+    background:#2563eb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+}
+.step p{
+    margin:0;
+    font-size:14px;
+    line-height:1.6;
+}
+.action{
+    margin-top:26px;
+    text-align:center;
+}
+button{
+    width:100%;
+    max-width:320px;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#00c6ff,#0072ff);
+    color:#fff;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 30px rgba(0,114,255,.5);
+}
+.loader{
+    display:none;
+    margin-top:18px;
+    font-size:14px;
+    opacity:.9;
+}
+.footer{
+    margin-top:26px;
+    text-align:center;
+    font-size:12px;
+    opacity:.75;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">KR</div>
+        <h1>Kuldeep Mobile Shop</h1>
+    </div>
+
+    <div class="sub">
+        आधार–पैन लिंक स्टेटस जांचने के लिए नीचे दिए गए स्टेप्स को फॉलो करें।
+    </div>
+
+    <div class="steps">
+        <div class="step">
+            <div class="no">1</div>
+            <p><strong>Status Check</strong> बटन पर क्लिक करें।</p>
+        </div>
+        <div class="step">
+            <div class="no">2</div>
+            <p>आधिकारिक आधार–पैन लिंक स्टेटस पेज खुलेगा।</p>
+        </div>
+        <div class="step">
+            <div class="no">3</div>
+            <p>दिए गए बॉक्स में अपना <strong>आधार नंबर</strong> और <strong>पैन कार्ड नंबर</strong> दर्ज करें।</p>
+        </div>
+        <div class="step">
+            <div class="no">4</div>
+            <p>जानकारी भरने के बाद <strong>Submit</strong> बटन पर क्लिक करें।</p>
+        </div>
+        <div class="step">
+            <div class="no">5</div>
+            <p>स्क्रीन पर आपकी <strong>लिंक स्थिति</strong> दिखाई दे जाएगी।</p>
+        </div>
+    </div>
+
+    <div class="action">
+        <button onclick="checkStatus()">Status Check करें</button>
+        <div class="loader" id="loader">
+            सरकारी पोर्टल लोड हो रहा है…
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2025 Kuldeep Rai. All Rights Reserved.
+    </div>
+</div>
+
+<script>
+function checkStatus(){
+    document.getElementById("loader").style.display="block";
+    setTimeout(()=>{
+        window.location.replace(
+            "https://eportal.incometax.gov.in/iec/foservices/#/pre-login/link-aadhaar-status"
+        );
+    },1500);
+}
+</script>
+
+</body>
+</html>
