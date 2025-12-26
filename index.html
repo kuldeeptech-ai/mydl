@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +22,7 @@ header{
   align-items:center;
   gap:12px;
   padding:16px 22px;
+  cursor:pointer;
 }
 header img{height:36px}
 header h1{margin:0;font-size:18px}
@@ -82,6 +82,19 @@ input{
 }
 .card div{padding:8px;font-size:14px}
 
+/* NEXT */
+#nextBtn{
+  margin:30px auto 0;
+  display:block;
+  padding:14px 32px;
+  border-radius:14px;
+  border:none;
+  background:linear-gradient(135deg,#6a5cff,#8f7bff);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
 /* PLAYER */
 #playerBox{
   display:none;
@@ -99,18 +112,19 @@ iframe{
 
 <body>
 
-<header>
+<header id="logoHome">
   <img src="https://i.ibb.co/bMbBqrkY/1000222391.png" alt="Logo">
   <h1>Universal Player</h1>
 </header>
 
 <div id="home">
   <div class="searchWrap">
-    <input id="search" placeholder="Search Indian movie or TV show (2025)">
+    <input id="search" placeholder="Search movies or TV shows…">
     <div id="suggestions"></div>
   </div>
 
   <div class="grid" id="grid"></div>
+  <button id="nextBtn">Next</button>
 </div>
 
 <div id="playerBox">
@@ -122,92 +136,91 @@ const TMDB_KEY = "c88113b226b2687a8bd933ae8cac61f4";
 const IMG = "https://image.tmdb.org/t/p/w500";
 const BASE_MOVIE = "https://bunnyddl.termsandconditionshere.workers.dev/movie/";
 const BASE_TV = "https://bunnyddl.termsandconditionshere.workers.dev/tv/";
+const TODAY = new Date().toISOString().slice(0,10);
 
 const home = document.getElementById("home");
+const grid = document.getElementById("grid");
 const playerBox = document.getElementById("playerBox");
 const iframe = document.getElementById("player");
-const grid = document.getElementById("grid");
 const search = document.getElementById("search");
 const suggestions = document.getElementById("suggestions");
 
-const TODAY = new Date().toISOString().slice(0,10);
+let page = 1;
 
-/* ---------- LOAD INDIA 2025 (MOVIE + TV MERGED) ---------- */
-Promise.all([
-  fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_KEY}&with_origin_country=IN&primary_release_year=2025&primary_release_date.lte=${TODAY}`).then(r=>r.json()),
-  fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_KEY}&with_origin_country=IN&first_air_date_year=2025&first_air_date.lte=${TODAY}`).then(r=>r.json())
-]).then(([m,t])=>{
-  const all = [
-    ...m.results.map(x=>({...x,media:"movie"})),
-    ...t.results.map(x=>({...x,media:"tv"}))
-  ];
-  all.forEach(item=>{
-    if(!item.poster_path) return;
-    const c=document.createElement("div");
-    c.className="card";
-    c.innerHTML=`<img src="${IMG+item.poster_path}"><div>${item.title||item.name}</div>`;
-    c.onclick=()=>openItem(item);
-    grid.appendChild(c);
+/* ---------- HEADER LOGO → HOME ---------- */
+document.getElementById("logoHome").onclick = () => {
+  iframe.src="";
+  playerBox.style.display="none";
+  home.style.display="block";
+  history.pushState({}, "", location.pathname);
+};
+
+/* ---------- LOAD INDIA MOVIES + TV (2025, RELEASED) ---------- */
+function loadHome(){
+  Promise.all([
+    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_KEY}&with_origin_country=IN&primary_release_year=2025&primary_release_date.lte=${TODAY}&page=${page}`).then(r=>r.json()),
+    fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_KEY}&with_origin_country=IN&first_air_date_year=2025&first_air_date.lte=${TODAY}&page=${page}`).then(r=>r.json())
+  ]).then(([m,t])=>{
+    const mix=[
+      ...m.results.map(x=>({...x,type:"movie"})),
+      ...t.results.map(x=>({...x,type:"tv"}))
+    ];
+    mix.slice(0,10).forEach(item=>{
+      if(!item.poster_path) return;
+      const c=document.createElement("div");
+      c.className="card";
+      c.innerHTML=`<img src="${IMG+item.poster_path}"><div>${item.title||item.name}</div>`;
+      c.onclick=()=>openItem(item);
+      grid.appendChild(c);
+    });
   });
-});
+}
 
-/* ---------- SEARCH SUGGESTIONS (FIXED PROPERLY) ---------- */
+loadHome();
+
+/* ---------- NEXT ---------- */
+nextBtn.onclick=()=>{
+  page++;
+  loadHome();
+};
+
+/* ---------- SEARCH (MOVIE + TV, INDIA + HOLLYWOOD) ---------- */
 let timer;
-search.oninput = () => {
+search.oninput=()=>{
   clearTimeout(timer);
-  const q = search.value.trim();
-  if (!q) {
-    suggestions.style.display = "none";
-    return;
-  }
+  const q=search.value.trim().toLowerCase();
+  if(!q){suggestions.style.display="none";return;}
 
-  timer = setTimeout(async () => {
-    const r = await fetch(
-      `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}`
-    );
-    const d = await r.json();
-
-    suggestions.innerHTML = "";
+  timer=setTimeout(async()=>{
+    const r=await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}`);
+    const d=await r.json();
+    suggestions.innerHTML="";
 
     d.results
-      .filter(item => {
-        // Poster must exist
-        if (!item.poster_path) return false;
-
-        // Date must not be future
-        const date = item.release_date || item.first_air_date;
-        if (!date || date > TODAY) return false;
-
-        // Movie or TV only
-        if (item.media_type !== "movie" && item.media_type !== "tv") return false;
-
-        // India condition
-        if (item.media_type === "tv") {
-          return item.origin_country && item.origin_country.includes("IN");
-        } else {
-          // Movies: language based India relevance
-          return ["hi", "ta", "te", "ml", "kn", "bn"].includes(item.original_language);
-        }
+      .filter(x=>{
+        if(!x.poster_path) return false;
+        if(!["movie","tv"].includes(x.media_type)) return false;
+        const date=x.release_date||x.first_air_date;
+        if(!date || date>TODAY) return false;
+        const name=(x.title||x.name||"").toLowerCase();
+        return name.includes(q);
       })
-      .slice(0, 8)
-      .forEach(item => {
-        const s = document.createElement("div");
-        s.className = "sug";
-        s.innerHTML = `
-          <img src="${IMG + item.poster_path}">
-          <span>${item.title || item.name} (${(item.release_date || item.first_air_date || "").slice(0,4)})</span>
-        `;
-        s.onclick = () => openItem(item);
+      .slice(0,8)
+      .forEach(x=>{
+        const s=document.createElement("div");
+        s.className="sug";
+        s.innerHTML=`<img src="${IMG+x.poster_path}"><span>${x.title||x.name} (${(x.release_date||x.first_air_date||"").slice(0,4)})</span>`;
+        s.onclick=()=>openItem(x);
         suggestions.appendChild(s);
       });
 
     suggestions.style.display = suggestions.children.length ? "block" : "none";
-  }, 300);
+  },300);
 };
 
 /* ---------- OPEN PLAYER ---------- */
 function openItem(item){
-  const url = item.media_type==="tv"
+  const url = item.type==="tv" || item.media_type==="tv"
     ? BASE_TV+item.id+"/1/1"
     : BASE_MOVIE+item.id;
 
@@ -218,12 +231,7 @@ function openItem(item){
   history.pushState({watch:url},"","?watch="+Math.random().toString(36).slice(2,8));
 }
 
-/* ---------- REFRESH + BACK ---------- */
-if(new URLSearchParams(location.search).get("watch")){
-  home.style.display="none";
-  playerBox.style.display="block";
-}
-
+/* ---------- BACK ---------- */
 window.onpopstate=()=>{
   iframe.src="";
   playerBox.style.display="none";
