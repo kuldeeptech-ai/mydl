@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Dynamic SEO Tags -->
+<meta name="description" content="Premium Image Converter Tool">
+<meta name="author" content="ImageMaster">
+<title>ImageMaster</title>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Dynamic Favicon (SVG based on Theme Color) -->
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23b8860b' width='100' height='100' rx='20'/%3E%3Ctext x='50' y='70' text-anchor='middle' fill='white' font-size='60' font-weight='bold' font-family='Arial'%3EIM%3C/text%3E%3C/svg%3E">
+
+<style>
+/* ==================== CSS STYLES ==================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    /* Dynamic Theme Colors */
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --text-primary: #2c3e50;
+    --text-secondary: #6c757d;
+    --brass-primary: #b8860b;
+    --brass-secondary: #b8860b; 
+    --accent-color: #6c63ff;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --border-color: #e9ecef;
+    --border-radius: 1rem;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+    --bg-primary: #1a1d29;
+    --bg-secondary: #22262f;
+    --bg-card: #2a2f3a;
+    --text-primary: #e8eaed;
+    --text-secondary: #9ca3af;
+    --border-color: #3a3f4a;
+    --shadow: rgba(0, 0, 0, 0.3);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    transition: var(--transition);
+}
+
+/* --- Animations --- */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.fade-in { animation: fadeIn 0.6s ease-out forwards; }
+
+/* --- Header --- */
+header { background: var(--bg-card); box-shadow: 0 2px 10px var(--shadow); padding: 1rem 2rem; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border-color); }
+.header-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 1.5rem; font-weight: 700; color: var(--brass-primary); display: flex; align-items: center; gap: 0.7rem; text-decoration: none; transition: var(--transition); }
+.logo:hover { transform: scale(1.05); }
+nav ul { display: flex; list-style: none; gap: 2rem; align-items: center; }
+nav ul li a { text-decoration: none; color: var(--text-primary); font-weight: 500; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.5rem; transition: var(--transition); }
+nav ul li a:hover { color: var(--brass-primary); background: var(--bg-primary); }
+
+/* --- Theme Toggle --- */
+.theme-toggle { background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--brass-primary); transition: var(--transition); }
+.theme-toggle:hover { background: var(--brass-primary); color: white; transform: scale(1.1); }
+
+/* --- Main Content --- */
+main { max-width: 1400px; margin: 2rem auto; padding: 0 2rem 6rem 2rem; min-height: calc(100vh - 200px); }
+.section { display: none; animation: fadeIn 0.6s ease-out; }
+.section.active { display: block; }
+
+/* --- Hero & Cards --- */
+.hero { text-align: center; padding: 2rem 0; }
+.hero h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary); }
+.hero p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem; }
+.converter-card { background: var(--bg-card); border-radius: var(--border-radius); padding: 2rem; box-shadow: 0 4px 20px var(--shadow); margin: 2rem 0; border: 1px solid var(--border-color); transition: var(--transition); }
+
+/* --- Upload Area --- */
+.upload-area { border: 2px dashed var(--border-color); border-radius: var(--border-radius); padding: 3rem; text-align: center; cursor: pointer; background: var(--bg-primary); transition: var(--transition); }
+.upload-area:hover { border-color: var(--brass-primary); background: var(--bg-secondary); }
+.upload-area.dragover { border-color: var(--accent-color); background: rgba(108, 99, 255, 0.05); }
+.upload-icon { font-size: 4rem; margin-bottom: 1rem; color: var(--brass-primary); }
+
+/* --- Format Grid --- */
+.format-selection { margin: 2rem 0; }
+.format-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.format-option { background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: 0.8rem; padding: 1.5rem; text-align: center; cursor: pointer; transition: var(--transition); position: relative; }
+.format-option:hover { border-color: var(--brass-primary); transform: translateY(-3px); }
+.format-option.selected { border-color: var(--brass-primary); background: rgba(184, 134, 11, 0.1); }
+.format-option input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+.format-icon { font-size: 2.5rem; margin-bottom: 0.8rem; color: var(--brass-primary); }
+.format-name { font-weight: 600; color: var(--text-primary); }
+
+/* --- Buttons --- */
+.btn-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin: 2rem 0; }
+.btn { padding: 0.9rem 2rem; border: none; border-radius: 0.8rem; font-size: 1rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 0.6rem; font-family: 'Poppins', sans-serif; }
+.btn-primary { background: linear-gradient(135deg, var(--brass-primary), #daa520); color: white; box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4); }
+.btn-secondary { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background: var(--bg-secondary); transform: translateY(-2px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* --- Previews & Progress --- */
+.preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+.preview-item { background: var(--bg-primary); border-radius: 0.8rem; padding: 1rem; border: 1px solid var(--border-color); position: relative; overflow: hidden; }
+.preview-item img { width: 100%; height: auto; max-height: 200px; object-fit: contain; border-radius: 0.5rem; margin-bottom: 0.5rem; }
+.preview-item .remove-btn { position: absolute; top: 10px; right: 10px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.progress-container { display: none; margin: 2rem 0; }
+.progress-container.active { display: block; }
+.progress-bar { width: 100%; height: 35px; background: var(--bg-primary); border-radius: 0.8rem; overflow: hidden; border: 1px solid var(--border-color); }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--brass-primary), #daa520); width: 0%; transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
+.spinner { border: 4px solid var(--border-color); border-top: 4px solid var(--brass-primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 2rem auto; display: none; }
+.spinner.active { display: block; }
+
+/* --- Gallery --- */
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+.gallery-item { background: var(--bg-card); border-radius: 0.8rem; padding: 1rem; border: 1px solid var(--border-color); transition: var(--transition); }
+.gallery-item:hover { transform: translateY(-5px); box-shadow: 0 8px 20px var(--shadow); }
+.gallery-item img { width: 100%; height: auto; max-height: 250px; object-fit: contain; margin-bottom: 1rem; background: var(--bg-primary); border-radius: 0.5rem; }
+.gallery-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.gallery-actions .btn { flex: 1; justify-content: center; padding: 0.7rem; font-size: 0.9rem; }
+.btn-danger { background: #dc3545; color: white; }
+.btn-danger:hover { background: #c82333; }
+
+/* --- Article & FAQ Styles --- */
+.article-section, .faq-section, .about-content { background: var(--bg-card); border-radius: var(--border-radius); padding: 2.5rem; margin: 3rem 0; border: 1px solid var(--border-color); }
+.article-section h2, .faq-section h2, .about-content h2 { color: var(--brass-primary); margin-bottom: 1.5rem; font-size: 1.8rem; }
+.faq-item { margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; }
+.faq-question { display: flex; align-items: flex-start; gap: 1rem; cursor: pointer; padding: 1rem; border-radius: 0.5rem; transition: var(--transition); }
+.faq-question:hover { background: var(--bg-primary); }
+.faq-question i { color: var(--brass-primary); margin-top: 4px; }
+.faq-question h3 { font-size: 1.1rem; margin: 0; color: var(--text-primary); }
+.faq-answer { margin-left: 3rem; color: var(--text-secondary); line-height: 1.7; padding: 0 1rem; display: none; }
+.faq-answer.active { display: block; }
+
+/* --- About Features Grid --- */
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+.feature-card { background: var(--bg-primary); border-radius: 0.8rem; padding: 2rem; text-align: center; border: 1px solid var(--border-color); transition: var(--transition); }
+.feature-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px var(--shadow); }
+.feature-icon { font-size: 2.5rem; margin-bottom: 1rem; color: var(--brass-primary); }
+.feature-card h3 { margin-bottom: 0.8rem; color: var(--text-primary); }
+.feature-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+
+/* --- Contact Form (Professionally Styled) --- */
+.contact-form { max-width: 600px; margin: 0 auto; background: var(--bg-card); padding: 3rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: 0 4px 20px var(--shadow); }
+.form-group { margin-bottom: 1.5rem; text-align: left; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary); }
+.form-group label i { color: var(--brass-primary); margin-right: 8px; }
+.form-control { width: 100%; padding: 1rem; border: 1px solid var(--border-color); border-radius: 0.8rem; background: var(--bg-primary); color: var(--text-primary); font-family: 'Poppins', sans-serif; transition: var(--transition); font-size: 1rem; }
+.form-control:focus { outline: none; border-color: var(--brass-primary); box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1); background: var(--bg-secondary); }
+textarea.form-control { min-height: 150px; resize: vertical; }
+
+/* --- Footer (Desktop) --- */
+footer { background: var(--bg-card); padding: 3rem 2rem; text-align: center; box-shadow: 0 -2px 10px var(--shadow); margin-top: 4rem; border-top: 1px solid var(--border-color); }
+.social-icons { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem; }
+.social-icons a { width: 45px; height: 45px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--brass-primary); text-decoration: none; border: 1px solid var(--border-color); transition: var(--transition); font-size: 1.3rem; }
+.social-icons a:hover { transform: translateY(-3px); background: var(--brass-primary); color: white; border-color: var(--brass-primary); }
+
+/* --- Mobile Navigation --- */
+.bottom-menu { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); box-shadow: 0 -2px 10px var(--shadow); padding: 0.8rem 0; z-index: 1000; border-top: 1px solid var(--border-color); }
+.bottom-menu nav { display: flex; justify-content: space-around; align-items: center; }
+.bottom-menu nav a { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; color: var(--text-secondary); text-decoration: none; font-size: 0.75rem; transition: var(--transition); padding: 0.5rem; border-radius: 0.5rem; }
+.bottom-menu nav a.active { color: var(--brass-primary); background: rgba(184, 134, 11, 0.1); }
+.bottom-menu nav a i { font-size: 1.4rem; }
+
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+.hamburger span { width: 25px; height: 3px; background: var(--brass-primary); border-radius: 5px; transition: var(--transition); }
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+
+/* --- Ads --- */
+.ad-slot { background: var(--bg-card); border: 2px dashed var(--border-color); border-radius: 0.8rem; padding: 1rem; margin: 1.5rem 0; min-height: 100px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); text-align: center; }
+.ad-slot.horizontal { min-height: 90px; }
+.ad-slot.square { min-height: 250px; }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    nav ul { display: none; }
+    .hamburger { display: flex; }
+    .bottom-menu { display: block; }
+    footer { display: none; } /* Hide Desktop Footer on Mobile */
+    nav.mobile-active ul { display: flex; flex-direction: column; position: fixed; top: 70px; left: 0; right: 0; background: var(--bg-card); padding: 1.5rem; box-shadow: 0 4px 20px var(--shadow); z-index: 999; animation: slideInUp 0.3s; }
+    .format-grid { grid-template-columns: repeat(3, 1fr); }
+    .converter-card, .article-section, .contact-form { padding: 1.5rem; }
+    .hero h1 { font-size: 2rem; }
+}
+
+/* --- Notifications --- */
+.notification-container { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; flex-direction: column; gap: 15px; max-width: 450px; pointer-events: none; }
+.notification { background: var(--bg-card); border-radius: 15px; padding: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2); pointer-events: all; border: 1px solid var(--border-color); animation: slideInUp 0.5s; display: flex; overflow: hidden; min-width: 300px; }
+.notification-icon { width: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; }
+.notification.success .notification-icon { background: #10b981; }
+.notification.error .notification-icon { background: #ef4444; }
+.notification.info .notification-icon { background: #3b82f6; }
+.notification.warning .notification-icon { background: #f59e0b; }
+.notification-content { padding: 15px; flex: 1; }
+.notification-title { font-weight: 700; font-size: 1rem; margin-bottom: 2px; color: var(--text-primary); }
+.notification-message { font-size: 0.9rem; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<!-- NOTIFICATIONS -->
+<div class="notification-container" id="notificationContainer"></div>
+
+<!-- HEADER -->
+<header class="fade-in">
+    <div class="header-container">
+        <a href="#" class="logo" onclick="showSection('home')">
+            <i class="fas fa-images"></i> <span>ImageMaster</span>
+        </a>
+        <nav id="mainNav">
+            <ul>
+                <li><a href="#" onclick="showSection('home')">Home</a></li>
+                <li><a href="#" onclick="showSection('convert')">Convert</a></li>
+                <li><a href="#" onclick="showSection('gallery')">Gallery</a></li>
+                <li><a href="#" onclick="showSection('about')">About</a></li>
+                <li><a href="#" onclick="showSection('contact')">Contact</a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <div class="hamburger" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main>
+    <!-- HOME SECTION -->
+    <section id="home" class="section active fade-in">
+        <div class="hero">
+            <h1><i class="fas fa-image"></i> Premium Image Converter</h1>
+            <p> Image Converter Tool</p>
+        </div>
+
+        <div class="ad-slot horizontal"><!-- Ad: HOME_TOP --></div>
+
+        <div class="converter-card">
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h3>Drop your images here</h3>
+                <p>or click to browse (Supports: JPG, PNG, WEBP, GIF, BMP)</p>
+                <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+            </div>
+
+            <div class="preview-grid" id="previewGrid"></div>
+
+            <div class="format-selection" id="formatSection" style="display: none;">
+                <h3>Select Output Format</h3>
+                <div class="format-grid">
+                    <label class="format-option"><input type="radio" name="format" value="png"><div class="format-icon"><i class="fas fa-file-image"></i></div><div class="format-name">PNG</div></label>
+                    <label class="format-option"><input type="radio" name="format" value="jpeg"><div class="format-icon"><i class="fas fa-camera"></i></div><div class="format-name">JPG</div></label>
+                    <label class="format-option"><input type="radio" name="format" value="webp"><div class="format-icon"><i class="fab fa-chrome"></i></div><div class="format-name">WEBP</div></label>
+                    <label class="format-option"><input type="radio" name="format" value="gif"><div class="format-icon"><i class="fas fa-film"></i></div><div class="format-name">GIF</div></label>
+                    <label class="format-option"><input type="radio" name="format" value="bmp"><div class="format-icon"><i class="fas fa-palette"></i></div><div class="format-name">BMP</div></label>
+                    <label class="format-option"><input type="radio" name="format" value="ico"><div class="format-icon"><i class="fas fa-star"></i></div><div class="format-name">ICO</div></label>
+                </div>
+            </div>
+
+            <div class="ad-slot square" id="adBeforeConvert" style="display: none;"><!-- Ad: BEFORE_CONVERT --></div>
+
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill">0%</div>
+                </div>
+            </div>
+
+            <div class="spinner" id="spinner"></div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="convertBtn" onclick="convertImages()" disabled>
+                    <i class="fas fa-magic"></i> Convert Now
+                </button>
+                <button class="btn btn-secondary" onclick="clearImages()">
+                    <i class="fas fa-trash-alt"></i> Clear All
+                </button>
+                <button class="btn btn-secondary" id="downloadBtn" onclick="downloadAll()" style="display: none;">
+                    <i class="fas fa-download"></i> Download All
+                </button>
+            </div>
+        </div>
+
+        <!-- Dynamic Guide Section from DB -->
+        <div class="article-section" style="margin-top: 3rem;">
+            <h2>📖 Guide to Image Conversion</h2>
+            <p>Secure, fast, and free image conversion in your browser.</p>
+        </div>
+
+        <!-- Dynamic FAQ Section from DB -->
+        <div class="faq-section">
+            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+                        <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <h3>Is it free?</h3>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, 100% free.</p>
+                </div>
+            </div>
+                        <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <h3>Is it secure?</h3>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, files stay on your device.</p>
+                </div>
+            </div>
+                    </div>
+        
+        <div class="ad-slot horizontal"><!-- Ad: FOOTER --></div>
+    </section>
+
+    <!-- CONVERT SECTION -->
+    <section id="convert" class="section">
+        <div class="hero">
+            <h1><i class="fas fa-sync-alt"></i> Convert</h1>
+            <p>Fast, secure, and completely offline conversion</p>
+        </div>
+        <div class="converter-card">
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h3>Drop your images here</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY SECTION -->
+    <section id="gallery" class="section">
+        <div class="hero">
+            <h1><i class="fas fa-images"></i> Gallery</h1>
+            <p>Your converted images appear here</p>
+        </div>
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <button class="btn btn-danger" onclick="clearGallery()" id="clearGalleryBtn">
+                <i class="fas fa-trash-alt"></i> Clear Gallery
+            </button>
+        </div>
+        <div class="ad-slot horizontal"><!-- Ad: GALLERY_TOP --></div>
+        <div class="gallery-grid" id="galleryGrid"></div>
+        <div class="ad-slot horizontal"><!-- Ad: GALLERY_BOTTOM --></div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="section">
+        <div class="about-content">
+            <h2><i class="fas fa-info-circle"></i> About ImageMaster</h2>
+            <p>ImageMaster is a premium, 100% free image converter that works entirely in your browser. No uploads, no servers, complete privacy.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                    <h3>100% Private</h3>
+                    <p>All conversions happen locally in your browser. Your images never leave your device.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Lightning Fast</h3>
+                    <p>Convert multiple images instantly with our optimized conversion engine.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-palette"></i></div>
+                    <h3>Multiple Formats</h3>
+                    <p>Support for PNG, JPG, WEBP, GIF, BMP, and ICO formats.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Works perfectly on desktop, tablet, and mobile devices.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-infinity"></i></div>
+                    <h3>No Limits</h3>
+                    <p>Convert as many images as you want, no restrictions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-wifi"></i></div>
+                    <h3>Works Offline</h3>
+                    <p>No internet connection required after initial load.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--text-primary);">Supported Formats</h3>
+            <ul style="margin-left: 1.5rem; line-height: 2; color: var(--text-secondary);">
+                <li><strong>PNG:</strong> Lossless format, perfect for graphics and screenshots</li>
+                <li><strong>JPG/JPEG:</strong> Compressed format, ideal for photos</li>
+                <li><strong>WEBP:</strong> Modern format with better compression</li>
+                <li><strong>GIF:</strong> Animation-capable format</li>
+                <li><strong>BMP:</strong> Uncompressed bitmap format</li>
+                <li><strong>ICO:</strong> Icon format for favicons</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="section">
+        <div class="hero"><h1><i class="fas fa-envelope"></i> Contact</h1></div>
+        <div class="contact-form">
+            <form onsubmit="handleContactSubmit(event)">
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user"></i> Name</label>
+                    <input type="text" id="name" class="form-control" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" class="form-control" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="message"><i class="fas fa-comment"></i> Message</label>
+                    <textarea id="message" class="form-control" required placeholder="Your message..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<!-- FOOTER (DESKTOP) -->
+<footer>
+    <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>        <a href="#"><i class="fab fa-twitter"></i></a>        <a href="#"><i class="fab fa-instagram"></i></a>        <a href="#"><i class="fab fa-youtube"></i></a>    </div>
+    <p>© 2025 ImageMaster | All Rights Reserved.</p>
+</footer>
+
+<!-- MOBILE BOTTOM MENU -->
+<div class="bottom-menu">
+    <nav>
+        <a href="#" onclick="showSection('home')"><i class="fas fa-home"></i>Home</a>
+        <a href="#" onclick="showSection('convert')"><i class="fas fa-sync-alt"></i>Convert</a>
+        <a href="#" onclick="showSection('gallery')"><i class="fas fa-images"></i>Gallery</a>
+        <a href="#" onclick="showSection('about')"><i class="fas fa-info-circle"></i>About</a>
+    </nav>
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+// --- GLOBAL VARS ---
+let selectedFiles = [];
+let convertedImages = [];
+
+// --- NOTIFICATION SYSTEM ---
+function showNotification(title, message, type = 'success') {
+    const container = document.getElementById('notificationContainer');
+    const notif = document.createElement('div');
+    notif.className = `notification ${type}`;
+    notif.innerHTML = `
+        <div class="notification-icon"><i class="fas fa-${type=='success'?'check':(type=='error'?'times':'info')}"></i></div>
+        <div class="notification-content">
+            <div class="notification-title">${title}</div>
+            <div class="notification-message">${message}</div>
+        </div>
+    `;
+    container.appendChild(notif);
+    setTimeout(() => notif.remove(), 4000);
+}
+
+// --- THEME & NAV ---
+function toggleTheme() {
+    const body = document.body;
+    const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.getElementById('themeIcon').className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+}
+window.onload = () => {
+    if(localStorage.getItem('theme') === 'dark') toggleTheme();
+    loadGalleryFromStorage();
+};
+
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    // Mobile Menu Active State
+    document.querySelectorAll('.bottom-menu a').forEach(a => a.classList.remove('active'));
+    document.querySelector(`.bottom-menu a[onclick*='${id}']`)?.classList.add('active');
+    
+    // Mobile Toggle
+    if(window.innerWidth < 768) {
+        document.getElementById('mainNav').classList.remove('mobile-active');
+        document.querySelector('.hamburger').classList.remove('active');
+    }
+}
+
+function toggleFaq(el) {
+    const ans = el.nextElementSibling;
+    const icon = el.querySelector('i');
+    ans.style.display = ans.style.display === 'block' ? 'none' : 'block';
+    icon.className = ans.style.display === 'block' ? 'fas fa-chevron-down' : 'fas fa-chevron-right';
+}
+
+function toggleMobileMenu() {
+    document.getElementById('mainNav').classList.toggle('mobile-active');
+    document.querySelector('.hamburger').classList.toggle('active');
+}
+
+// --- FILE HANDLING ---
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+uploadArea.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', (e) => handleFiles(Array.from(e.target.files)));
+uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+uploadArea.addEventListener('drop', (e) => { e.preventDefault(); handleFiles(Array.from(e.dataTransfer.files)); });
+
+function handleFiles(files) {
+    selectedFiles = [...selectedFiles, ...files.filter(f => f.type.startsWith('image/'))];
+    updatePreview();
+    document.getElementById('formatSection').style.display = 'block';
+    document.getElementById('adBeforeConvert').style.display = 'flex';
+    document.getElementById('convertBtn').disabled = false;
+}
+
+function updatePreview() {
+    const grid = document.getElementById('previewGrid');
+    grid.innerHTML = '';
+    selectedFiles.forEach((file, idx) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const div = document.createElement('div');
+            div.className = 'preview-item fade-in';
+            div.innerHTML = `
+                <img src="${e.target.result}">
+                <div style="padding: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                    <strong>${file.name}</strong>
+                </div>
+                <button class="remove-btn" onclick="removeFile(${idx})"><i class="fas fa-times"></i></button>
+            `;
+            grid.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function removeFile(idx) {
+    selectedFiles.splice(idx, 1);
+    updatePreview();
+    if(selectedFiles.length === 0) {
+        document.getElementById('formatSection').style.display = 'none';
+        document.getElementById('convertBtn').disabled = true;
+    }
+}
+
+function clearImages() {
+    selectedFiles = [];
+    updatePreview();
+    document.getElementById('formatSection').style.display = 'none';
+    document.getElementById('convertBtn').disabled = true;
+    document.getElementById('downloadBtn').style.display = 'none';
+    showNotification('Cleared', 'All images removed.', 'info');
+}
+
+// --- CONVERSION LOGIC ---
+async function convertImages() {
+    const fmtInput = document.querySelector('input[name="format"]:checked');
+    if (!fmtInput) return showNotification('Warning', 'Select output format.', 'warning');
+
+    const format = fmtInput.value;
+    const progBar = document.getElementById('progressFill');
+    
+    document.getElementById('progressContainer').classList.add('active');
+    document.getElementById('spinner').classList.add('active');
+    document.getElementById('convertBtn').disabled = true;
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        progBar.style.width = Math.round(((i+1)/selectedFiles.length)*100) + '%';
+        progBar.textContent = Math.round(((i+1)/selectedFiles.length)*100) + '%';
+
+        try {
+            const blob = await processImage(file, format, 0.9);
+            const newName = file.name.split('.')[0] + '.' + (format === 'jpeg' ? 'jpg' : format);
+            const url = URL.createObjectURL(blob);
+            
+            const imgData = { name: newName, url: url, blob: blob, timestamp: Date.now() };
+            convertedImages.push(imgData);
+            saveImageToStorage(imgData);
+
+            // Backend Logging
+            const formData = new FormData();
+            formData.append('action', 'log_conversion');
+            formData.append('file_name', file.name);
+            formData.append('format_from', file.type.split('/')[1]);
+            formData.append('format_to', format);
+            formData.append('file_size', (file.size/1024).toFixed(2) + ' KB');
+            fetch('api.php', { method: 'POST', body: formData }).catch(console.error);
+            
+        } catch (e) { console.error(e); }
+    }
+
+    document.getElementById('progressContainer').classList.remove('active');
+    document.getElementById('spinner').classList.remove('active');
+    document.getElementById('convertBtn').disabled = false;
+    document.getElementById('downloadBtn').style.display = 'flex';
+    
+    updateGallery();
+    showNotification('Success', `Converted ${selectedFiles.length} images successfully!`, 'success');
+}
+
+function processImage(file, format, quality) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const cvs = document.createElement('canvas');
+                cvs.width = img.width; cvs.height = img.height;
+                if(format==='ico'){ cvs.width=32; cvs.height=32; }
+                const ctx = cvs.getContext('2d');
+                ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
+                
+                let mime = 'image/png';
+                if(format === 'jpeg') mime = 'image/jpeg';
+                if(format === 'webp') mime = 'image/webp';
+                
+                cvs.toBlob(resolve, mime, quality);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// --- DOWNLOAD & GALLERY ---
+function downloadAll() {
+    convertedImages.forEach(img => {
+        const a = document.createElement('a');
+        a.href = img.url; a.download = img.name;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    });
+}
+
+function saveImageToStorage(data) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        let gallery = JSON.parse(localStorage.getItem('imageGallery') || '[]');
+        gallery.unshift({ name: data.name, data: reader.result, timestamp: data.timestamp });
+        if(gallery.length > 20) gallery.pop();
+        localStorage.setItem('imageGallery', JSON.stringify(gallery));
+    };
+    reader.readAsDataURL(data.blob);
+}
+
+function loadGalleryFromStorage() {
+    const gallery = JSON.parse(localStorage.getItem('imageGallery') || '[]');
+    gallery.forEach(item => {
+        fetch(item.data).then(r => r.blob()).then(blob => {
+            convertedImages.push({ name: item.name, url: item.data, blob: blob });
+            updateGallery();
+        });
+    });
+}
+
+function updateGallery() {
+    const grid = document.getElementById('galleryGrid');
+    grid.innerHTML = '';
+    convertedImages.forEach((img, idx) => {
+        const div = document.createElement('div');
+        div.className = 'gallery-item fade-in';
+        div.innerHTML = `
+            <img src="${img.url}">
+            <p><strong>${img.name}</strong></p>
+            <div class="gallery-actions">
+                <button class="btn btn-primary" onclick="downloadSingle(${idx})">Download</button>
+                <button class="btn btn-danger" onclick="deleteFromGallery(${idx})">Delete</button>
+            </div>`;
+        grid.appendChild(div);
+    });
+    if(convertedImages.length === 0) grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-secondary);">No images yet.</p>';
+}
+
+function downloadSingle(idx) {
+    const img = convertedImages[idx];
+    const a = document.createElement('a');
+    a.href = img.url; a.download = img.name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+function deleteFromGallery(idx) {
+    convertedImages.splice(idx, 1);
+    const newGallery = convertedImages.map(img => ({ name: img.name, data: img.url }));
+    localStorage.setItem('imageGallery', JSON.stringify(newGallery));
+    updateGallery();
+}
+
+function clearGallery() {
+    if(confirm('Clear entire gallery?')) {
+        localStorage.removeItem('imageGallery');
+        convertedImages = [];
+        updateGallery();
+        showNotification('Cleared', 'Gallery is empty.', 'info');
+    }
+}
+
+// --- CONTACT FORM ---
+function handleContactSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    
+    const formData = new FormData();
+    formData.append('action', 'send_message');
+    formData.append('name', document.getElementById('name').value);
+    formData.append('email', document.getElementById('email').value);
+    formData.append('message', document.getElementById('message').value);
+    
+    fetch('api.php', { method: 'POST', body: formData })
+        .then(r => r.json())
+        .then(() => {
+            showNotification('Sent!', 'We will contact you soon.', 'success');
+            e.target.reset();
+        })
+        .finally(() => btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message');
+}
+
+// --- FORMAT SELECTION UI ---
+document.querySelectorAll('.format-option').forEach(opt => {
+    opt.addEventListener('click', function() {
+        document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input').checked = true;
+    });
+});
+</script>
+</body>
+</html>
