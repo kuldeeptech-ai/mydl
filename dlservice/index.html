@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuldeep Cyber Shop - Driving Licence Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header - Optimized */
+        header {
+            background: linear-gradient(135deg, #0f1b5f 0%, #1e88e5 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(15, 27, 95, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .logo-icon {
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.15);
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .shop-name h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+        
+        .shop-name p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .contact-item i {
+            font-size: 1.2rem;
+        }
+        
+        .contact-number {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .contact-tag {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 3px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath fill='%231e88e5' fill-opacity='0.05' d='M45.6,-65.2C58.7,-57.2,69,-43.3,73.9,-27.8C78.7,-12.2,78.1,5.1,73.3,20.7C68.5,36.3,59.6,50.3,47.4,59.9C35.2,69.5,19.6,74.8,2.6,71.5C-14.3,68.2,-28.6,56.4,-40.8,44.4C-53,32.5,-63.1,20.4,-67.1,5.9C-71.1,-8.6,-69,-25.4,-60.9,-38.7C-52.8,-52,-38.6,-61.8,-23.3,-68.5C-8,-75.2,8.4,-78.7,23.6,-75.8C38.8,-72.8,52.6,-63.3,45.6,-65.2Z' transform='translate(100 100)'/%3E%3C/svg%3E");
+            background-size: contain;
+            opacity: 0.5;
+        }
+        
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+        
+        .hero-text {
+            flex: 1;
+            z-index: 1;
+        }
+        
+        .hero-text h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #0f1b5f;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .highlight {
+            color: #1e88e5;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: rgba(30, 136, 229, 0.2);
+            z-index: -1;
+            border-radius: 4px;
+        }
+        
+        .hero-text p {
+            font-size: 1.15rem;
+            color: #555;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        
+        .services-list {
+            list-style-type: none;
+            margin-bottom: 2.5rem;
+        }
+        
+        .services-list li {
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        
+        .services-list i {
+            color: #1e88e5;
+            font-size: 1.2rem;
+            min-width: 24px;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(to right, #0f1b5f, #1e88e5);
+            color: white;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(15, 27, 95, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(15, 27, 95, 0.4);
+        }
+        
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .dl-illustration {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            transform: perspective(1000px) rotateY(-10deg);
+            transition: transform 0.5s ease;
+        }
+        
+        .dl-illustration:hover {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+        
+        /* Location Section */
+        .location {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #0f1b5f;
+            text-align: center;
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, #0f1b5f, #1e88e5);
+            border-radius: 2px;
+        }
+        
+        .location-content {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 40px;
+        }
+        
+        .address-card {
+            flex: 1;
+            background: #f8fafc;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(15, 27, 95, 0.1);
+            border-left: 5px solid #1e88e5;
+        }
+        
+        .address-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            color: #0f1b5f;
+            margin-bottom: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .address-details {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .address-details p {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .address-details i {
+            color: #1e88e5;
+            margin-top: 4px;
+            font-size: 1.3rem;
+            min-width: 24px;
+        }
+        
+        .map-placeholder {
+            flex: 1;
+            background: linear-gradient(135deg, #0f1b5f 0%, #1e88e5 100%);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(15, 27, 95, 0.2);
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .map-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .map-placeholder p {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .map-placeholder span {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        /* Contact Section */
+        .contact {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 100%);
+        }
+        
+        .contact-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .contact-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(15, 27, 95, 0.1);
+            transition: all 0.4s ease;
+            border-top: 5px solid transparent;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-15px);
+            border-top: 5px solid #1e88e5;
+            box-shadow: 0 15px 40px rgba(15, 27, 95, 0.2);
+        }
+        
+        .contact-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #0f1b5f 0%, #1e88e5 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 20px rgba(30, 136, 229, 0.3);
+        }
+        
+        .contact-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .contact-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            color: #0f1b5f;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-card p {
+            font-size: 1.05rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .phone-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f1b5f;
+            margin: 15px 0;
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #e3f2fd;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .phone-number:hover {
+            background-color: #bbdefb;
+            transform: scale(1.05);
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #0a1442 0%, #0f1b5f 100%);
+            color: white;
+            padding: 3rem 0 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .footer-logo i {
+            font-size: 2.5rem;
+            color: #1e88e5;
+        }
+        
+        .footer-logo h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #64b5f6, #1e88e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .footer-contact {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            max-width: 600px;
+        }
+        
+        .footer-contact p {
+            margin-bottom: 8px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .social-links a {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: #1e88e5;
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            width: 100%;
+        }
+        
+        /* Animation Classes */
+        .animate-pop {
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-content, .location-content {
+                flex-direction: column;
+            }
+            
+            .hero-text h2 {
+                font-size: 2.4rem;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .logo-area {
+                justify-content: center;
+                min-width: auto;
+            }
+            
+            .contact-info {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-text h2 {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .address-card, .contact-card {
+                padding: 2rem;
+            }
+            
+            .phone-number {
+                font-size: 1.5rem;
+            }
+            
+            .footer-logo h2 {
+                font-size: 1.6rem;
+            }
+            
+            .header-container {
+                padding: 0 15px;
+            }
+            
+            .contact-item {
+                padding: 8px 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero {
+                padding: 3rem 0;
+            }
+            
+            .hero-text h2 {
+                font-size: 1.7rem;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-number {
+                font-size: 1.1rem;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.8rem;
+            }
+            
+            .shop-name h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section - Optimized -->
+    <header class="animate-fade-in">
+        <div class="container">
+            <div class="header-container">
+                <div class="logo-area animate-pop">
+                    <div class="logo-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="shop-name">
+                        <h1>Kuldeep Cyber Shop</h1>
+                        <p>Government & CSC Services</p>
+                    </div>
+                </div>
+               
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text animate-slide-up">
+                    <h2> <span class="highlight">Driving Licence</span> Services</h2>
+                    <p>At Kuldeep Cyber Shop, we provide fast and reliable driving licence services including new applications, renewals, and updates. Authorized CSC center for all government services.</p>
+                    
+                    <ul class="services-list">
+                        <li><i class="fas fa-check-circle"></i> New Driving Licence Application</li>
+                        <li><i class="fas fa-check-circle"></i> Driving Licence Renewal</li>
+                        <li><i class="fas fa-check-circle"></i> Duplicate Driving Licence</li>
+                        <li><i class="fas fa-check-circle"></i> Address & Details Update</li>
+                        <li><i class="fas fa-check-circle"></i> Learning Licence Services</li>
+                    </ul>
+                    
+                    <a href="tel:9555158536" class="cta-button animate-pop">
+                        <i class="fas fa-phone-alt"></i> Call Now: 9555158536
+                    </a>
+                </div>
+                <div class="hero-image">
+                    <img src="https://cdni.iconscout.com/illustration/premium/thumb/driving-license-illustration-svg-download-png-4397188.png" alt="Driving Licence Services" class="dl-illustration animate-slide-up" style="animation-delay: 0.3s">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="location">
+        <div class="container">
+            <h2 class="section-title animate-fade-in">Our Location</h2>
+            <div class="location-content">
+                <div class="address-card animate-slide-up" style="animation-delay: 0.2s">
+                    <h3><i class="fas fa-map-marker-alt"></i> Shop Details</h3>
+                    <div class="address-details">
+                        <p><i class="fas fa-store"></i> <strong>Shop Name:</strong> Kuldeep Cyber Shop</p>
+                        <p><i class="fas fa-location-dot"></i> <strong>Address:</strong> Baurbyas, Sugriv Rai Home</p>
+                        <p><i class="fas fa-clock"></i> <strong>Timing:</strong> 9:00 AM - 8:00 PM (Mon-Sat)</p>
+                        <p><i class="fas fa-star"></i> <strong>Specialization:</strong> Driving Licence Services</p>
+                        <p><i class="fas fa-phone"></i> <strong>Contact:</strong> 9555158536</p>
+                    </div>
+                </div>
+                <div class="map-placeholder animate-slide-up" style="animation-delay: 0.3s">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <p>Located in Baurbyas</p>
+                    <p>Sugriv Rai Home</p>
+                    <span>Easy to Find Location</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact">
+        <div class="container">
+            <h2 class="section-title animate-fade-in">Contact Us</h2>
+            <div class="contact-content">
+                <div class="contact-card animate-slide-up" style="animation-delay: 0.1s">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3>Phone Support</h3>
+                    <p>Call for driving licence queries</p>
+                    <a href="tel:9555158536" class="phone-number">9555158536</a>
+                    <p>Available 9 AM - 8 PM</p>
+                </div>
+                
+                <div class="contact-card animate-slide-up" style="animation-delay: 0.2s">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Visit Our Shop</h3>
+                    <p>Personalized assistance for all your driving licence needs</p>
+                    <p><strong>Address:</strong> Baurbyas, Sugriv Rai Home</p>
+                    <p><strong>Landmark:</strong> Near Sugriv Rai Residence</p>
+                </div>
+                
+                <div class="contact-card animate-slide-up" style="animation-delay: 0.3s">
+                    <div class="contact-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Business Hours</h3>
+                    <p><strong>Mon - Sat:</strong> 9:00 AM - 8:00 PM</p>
+                    <p><strong>Sunday:</strong> 10:00 AM - 5:00 PM</p>
+                    <p>Special hours for government service days</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo animate-pop">
+                    <i class="fas fa-id-card"></i>
+                    <h2>Kuldeep Cyber Shop</h2>
+                </div>
+                <div class="footer-contact animate-fade-in">
+                    <p>Baurbyas, Sugriv Rai Home | Phone: 9555158536</p>
+                    <p>Specialized in Driving Licence & Government Services</p>
+                </div>
+                <div class="social-links animate-fade-in">
+                    <a href="tel:9555158536" title="Call Us"><i class="fas fa-phone"></i></a>
+                    <a href="https://share.google/Ra2KcXem0VOql9yKv" title="Get Directions"><i class="fas fa-map-marker-alt"></i></a>
+                    <a href="mailto:kuldeeprai75220@gmail.com"><i class="fas fa-envelope"></i></a>
+                </div>
+                <div class="copyright animate-fade-in">
+                    <p>&copy; 2025 Kuldeep Cyber Shop. All Rights Reserved. | Authorized CSC & Government Service Center</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Enhanced animations and interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-slide-up');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe elements for scroll animations
+            document.querySelectorAll('.hero-text, .address-card, .map-placeholder, .contact-card').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Enhanced phone number interaction
+            const phoneNumbers = document.querySelectorAll('.contact-number, .phone-number, .contact-item');
+            phoneNumbers.forEach(number => {
+                number.addEventListener('click', function() {
+                    window.location.href = 'tel:9555158536';
+                });
+                number.style.cursor = 'pointer';
+            });
+            
+            // Add ripple effect to buttons
+            const buttons = document.querySelectorAll('.cta-button, .contact-card, .contact-item');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size/2;
+                    const y = e.clientY - rect.top - size/2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.7);
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        width: ${size}px;
+                        height: ${size}px;
+                        top: ${y}px;
+                        left: ${x}px;
+                        pointer-events: none;
+                    `;
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+            
+            // Add CSS for ripple effect
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+                .cta-button, .contact-card, .contact-item {
+                    position: relative;
+                    overflow: hidden;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Floating animation for logo
+            const logoIcon = document.querySelector('.logo-icon');
+            setInterval(() => {
+                logoIcon.style.transform = 'translateY(-5px)';
+                setTimeout(() => {
+                    logoIcon.style.transform = 'translateY(0)';
+                }, 1000);
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
